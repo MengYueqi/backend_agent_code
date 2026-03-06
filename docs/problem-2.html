@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>题目 2 - 单例模式</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
+  <style>
+:root {
+  --bg: #f4efe4;
+  --ink: #211c15;
+  --paper: #fffaf0;
+  --paper-2: #fff4df;
+  --accent: #b43b1d;
+  --line: #d8c2a3;
+  --line-strong: #b7966c;
+  --muted: #615545;
+  --shadow: 0 20px 40px rgba(43, 31, 17, 0.12);
+}
+[data-theme="dark"] {
+  --bg: #181512;
+  --ink: #efe4d2;
+  --paper: #26211c;
+  --paper-2: #2d2721;
+  --accent: #ff8d5e;
+  --line: #4b4134;
+  --line-strong: #78644d;
+  --muted: #c4b39c;
+  --shadow: 0 20px 36px rgba(0, 0, 0, 0.35);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 8% -10%, #ffe6be 0%, transparent 38%),
+    radial-gradient(circle at 92% 110%, #ffd8b0 0%, transparent 34%),
+    linear-gradient(120deg, transparent 0 46%, rgba(255,255,255,0.35) 46% 47%, transparent 47%),
+    var(--bg);
+  font-family: "Noto Serif SC", "Source Han Serif SC", serif;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(107, 84, 48, 0.08) 0.8px, transparent 0.8px);
+  background-size: 4px 4px;
+  opacity: .4;
+  z-index: -1;
+}
+a { color: inherit; }
+.home-wrap {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 40px 22px 68px;
+}
+.theme-toggle {
+  position: fixed;
+  right: 16px;
+  top: 14px;
+  z-index: 20;
+  border: 1px solid var(--line-strong);
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font: inherit;
+  font-size: .82rem;
+  cursor: pointer;
+}
+.hero {
+  border: 1px solid var(--line-strong);
+  background: linear-gradient(145deg, var(--paper), #fff7e8);
+  border-radius: 20px;
+  padding: 28px 24px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  right: -20px;
+  top: -20px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(180, 59, 29, .26) 0%, transparent 68%);
+}
+.home-title {
+  margin: 10px 0 0;
+  font-size: clamp(2.1rem, 4vw, 3.4rem);
+  letter-spacing: 0.6px;
+  line-height: 1.1;
+  max-width: 16ch;
+  font-weight: 700;
+}
+.eyebrow {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: #fffdf8;
+  color: var(--accent);
+  font-size: 0.82rem;
+  letter-spacing: .08em;
+}
+.home-sub {
+  margin-top: 12px;
+  color: var(--muted);
+  max-width: 70ch;
+  line-height: 1.75;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 18px;
+  margin-top: 22px;
+}
+.card {
+  display: block;
+  text-decoration: none;
+  background: linear-gradient(160deg, var(--paper) 0%, #fffdf8 100%);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 18px;
+  min-height: 150px;
+  box-shadow: 0 8px 24px rgba(57, 39, 20, 0.08);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  animation: rise .45s ease both;
+}
+.card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+  box-shadow: 0 16px 30px rgba(61, 34, 10, .16);
+}
+.card-id {
+  color: #8f2b12;
+  font-size: .85rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+}
+.card-title {
+  margin-top: 8px;
+  font-size: 1.25rem;
+  line-height: 1.3;
+}
+.card-meta {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: .9rem;
+}
+.layout {
+  display: flex;
+  gap: 0;
+  min-height: 100vh;
+  max-width: 1500px;
+  margin: 0 auto;
+  border-left: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+}
+.panel {
+  padding: 28px 24px 42px;
+  overflow: auto;
+  animation: fadein .45s ease both;
+}
+.left {
+  flex: 0 0 46%;
+  background: linear-gradient(180deg, #fff8eb 0%, #fffef9 100%);
+  border-right: 1px solid var(--line-strong);
+}
+.right {
+  flex: 1;
+  background: linear-gradient(180deg, #fdf3de 0%, #f9edd6 100%);
+}
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  font-size: .82rem;
+  color: #7f3019;
+  background: #fff;
+}
+.back {
+  text-decoration: none;
+  border: 1px solid var(--line-strong);
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #fffdfa;
+  font-size: .9rem;
+  transition: background .2s ease;
+}
+.back:hover { background: #fff3de; }
+h1,h2,h3,h4 {
+  margin-top: 1.1em;
+  margin-bottom: .5em;
+  line-height: 1.3;
+}
+h1 { font-size: clamp(1.8rem, 2.3vw, 2.4rem); }
+h2 { font-size: 1.35rem; }
+p { line-height: 1.8; margin: .65em 0; }
+ul, ol { line-height: 1.8; padding-left: 22px; }
+li { margin: .3em 0; }
+pre {
+  border-radius: 14px;
+  border: 1px solid #293646;
+  margin: 8px 0 18px;
+  overflow: hidden;
+  box-shadow: 0 10px 22px rgba(35, 36, 50, 0.18);
+}
+pre code {
+  display: block;
+  border-radius: inherit;
+  font-family: "Fira Code", "JetBrains Mono", monospace;
+  font-size: .88rem;
+}
+.code-block h3 {
+  margin: 0;
+  font-size: .92rem;
+  color: #3f3327;
+}
+.code-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  gap: 12px;
+}
+.path {
+  color: var(--muted);
+  font-size: .8rem;
+  word-break: break-all;
+}
+.code-intro {
+  margin: 8px 0 14px;
+  color: #5f4e39;
+  font-size: .95rem;
+}
+[data-theme="dark"] body {
+  background:
+    radial-gradient(circle at 8% -10%, rgba(255, 141, 94, 0.22) 0%, transparent 38%),
+    radial-gradient(circle at 92% 110%, rgba(255, 193, 140, 0.12) 0%, transparent 34%),
+    linear-gradient(120deg, transparent 0 46%, rgba(255,255,255,0.03) 46% 47%, transparent 47%),
+    var(--bg);
+}
+[data-theme="dark"] body::before {
+  background-image: radial-gradient(rgba(255, 240, 220, 0.05) 0.8px, transparent 0.8px);
+}
+[data-theme="dark"] .hero {
+  background: linear-gradient(145deg, #2b241d, #241f1a);
+}
+[data-theme="dark"] .eyebrow {
+  background: #302922;
+}
+[data-theme="dark"] .card {
+  background: linear-gradient(160deg, #2c2620 0%, #26211d 100%);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+[data-theme="dark"] .card-id,
+[data-theme="dark"] .badge {
+  color: #ffb089;
+}
+[data-theme="dark"] .layout {
+  border-left-color: var(--line);
+  border-right-color: var(--line);
+}
+[data-theme="dark"] .left {
+  background: linear-gradient(180deg, #25201b 0%, #211c18 100%);
+}
+[data-theme="dark"] .right {
+  background: linear-gradient(180deg, #1f1b17 0%, #1a1714 100%);
+}
+[data-theme="dark"] .badge,
+[data-theme="dark"] .back {
+  background: #302922;
+}
+[data-theme="dark"] .back:hover {
+  background: #3a3128;
+}
+[data-theme="dark"] .code-block h3,
+[data-theme="dark"] .code-intro,
+[data-theme="dark"] .path {
+  color: #d7c9b4;
+}
+.card:nth-child(2n) { animation-delay: .06s; }
+.card:nth-child(3n) { animation-delay: .1s; }
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadein {
+  from { opacity: .3; }
+  to { opacity: 1; }
+}
+@media (max-width: 900px) {
+  .layout {
+    display: block;
+    border-left: 0;
+    border-right: 0;
+  }
+  .left { border-right: 0; border-bottom: 1px solid var(--line-strong); }
+  .home-wrap { padding-top: 28px; }
+  .hero { padding: 22px 18px; }
+  .panel { padding: 22px 16px 28px; }
+}
+</style>
+  
+</head>
+<body>
+<button id="theme-toggle" class="theme-toggle" type="button" aria-label="切换深色主题">深色</button>
+
+<div class="layout">
+  <section class="panel left">
+    <div class="topbar">
+      <a class="back" href="./index.html">返回主页</a>
+      <span class="badge">题号 2</span>
+    </div>
+    <h1>单例模式</h1>
+    <h1>题目 2：实现线程安全单例（懒加载）</h1>
+<h2>题目描述</h2>
+<p>在很多工程场景中（如配置管理器、日志组件、连接池入口），需要确保全局只有一个实例，并且在首次使用时才创建。  </p>
+<p>请使用 Go 实现一个线程安全的单例对象，要求在并发调用下也只会初始化一次。</p>
+<h2>具体要求</h2>
+<p>1. 设计一个类型（例如 `ConfigCenter` 或 `Singleton`），并提供统一获取实例的方法，例如：</p>
+<pre><code class="language-go">
+func GetInstance() *Singleton
+</code></pre>
+<p>2. 整个进程生命周期内必须只创建一个实例，多次调用 `GetInstance()` 返回的必须是同一个对象（指针相同）。</p>
+<p>3. 必须支持并发安全：多个 goroutine 同时调用时，不能出现创建多个实例、数据竞争或 panic。</p>
+<p>4. 采用懒加载：在第一次调用 `GetInstance()` 之前，不应提前创建实例。</p>
+<p>5. 不允许通过外部代码直接创建该类型实例（即应限制外部随意实例化）。</p>
+<h2>输入输出说明</h2>
+<ul>
+<li>输入：无显式输入，调用方通过 `GetInstance()` 获取实例。</li>
+<li>输出：返回单例对象指针 `*Singleton`（或你定义的等价类型）。</li>
+</ul>
+<h2>示例</h2>
+<h3>示例 1（正常场景）</h3>
+<ul>
+<li>操作：</li>
+</ul>
+<pre><code class="language-go">
+a := GetInstance()
+b := GetInstance()
+fmt.Println(a == b)
+</code></pre>
+<ul>
+<li>输出：`true`</li>
+<li>说明：连续两次获取返回同一个实例。</li>
+</ul>
+<h3>示例 2（边界：高并发）</h3>
+<ul>
+<li>操作：启动 100 个 goroutine 并发调用 `GetInstance()`，收集返回地址并去重。</li>
+<li>输出：去重后地址数量为 `1`。</li>
+<li>说明：并发场景下依然只能初始化一次。</li>
+</ul>
+<h2>追问（可选）</h2>
+<ul>
+<li>如果单例初始化过程可能失败（例如读取配置文件失败），你会如何设计返回值和重试策略？</li>
+<li>如何为单例写单元测试，验证“只初始化一次”和“并发安全”？</li>
+<li>单例模式在工程里有哪些常见误用？什么情况下不应该使用单例？</li>
+</ul>
+  </section>
+  <section class="panel right">
+    <h2>代码实现</h2>
+    <p class="code-intro">对应题解代码与测试文件按目录展示，便于对照阅读与回顾。</p>
+    
+<section class="code-block">
+  <div class="code-head">
+    <h3>2_singleton.go</h3>
+    <span class="path">src/2_singleton.go</span>
+  </div>
+  <pre><code class="language-go">package src
+
+import &quot;sync&quot;
+
+type Singleton struct {
+	value int
+}
+
+var singleton *Singleton
+var once sync.Once
+
+func GetInstance() *Singleton {
+	once.Do(func() {
+		singleton = &amp;Singleton{
+			value: 6,
+		}
+	},
+	)
+	return singleton
+}
+</code></pre>
+</section>
+
+<section class="code-block">
+  <div class="code-head">
+    <h3>2_singleton_test.go</h3>
+    <span class="path">test/2_singleton_test.go</span>
+  </div>
+  <pre><code class="language-go">package test
+
+import (
+	&quot;sync&quot;
+	&quot;testing&quot;
+
+	&quot;go_coding_noalgorithm/src&quot;
+)
+
+func TestGetInstance_NotNil(t *testing.T) {
+	instance := src.GetInstance()
+	if instance == nil {
+		t.Fatal(&quot;expected non-nil singleton instance&quot;)
+	}
+}
+
+func TestGetInstance_SamePointer(t *testing.T) {
+	first := src.GetInstance()
+	second := src.GetInstance()
+
+	if first != second {
+		t.Fatal(&quot;expected same singleton pointer across calls&quot;)
+	}
+}
+
+func TestGetInstance_ConcurrentSamePointer(t *testing.T) {
+	const goroutines = 100
+
+	results := make([]*src.Singleton, goroutines)
+	var wg sync.WaitGroup
+	wg.Add(goroutines)
+
+	for i := 0; i &lt; goroutines; i++ {
+		go func(idx int) {
+			defer wg.Done()
+			results[idx] = src.GetInstance()
+		}(i)
+	}
+	wg.Wait()
+
+	base := results[0]
+	for i := 1; i &lt; goroutines; i++ {
+		if results[i] != base {
+			t.Fatalf(&quot;expected all goroutines to get same singleton pointer, mismatch at index %d&quot;, i)
+		}
+	}
+}
+</code></pre>
+</section>
+
+  </section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+(() => {
+  const key = "problem_site_theme";
+  const root = document.documentElement;
+  const btn = document.getElementById("theme-toggle");
+  const preferredDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const saved = localStorage.getItem(key);
+  const apply = (theme) => {
+    root.setAttribute("data-theme", theme);
+    if (btn) btn.textContent = theme === "dark" ? "浅色" : "深色";
+  };
+  apply(saved || (preferredDark ? "dark" : "light"));
+  if (btn) {
+    btn.addEventListener("click", () => {
+      const next = root.getAttribute("data-theme") == "dark" ? "light" : "dark";
+      localStorage.setItem(key, next);
+      apply(next);
+    });
+  }
+  hljs.highlightAll();
+})();
+</script>
+</body>
+</html>
