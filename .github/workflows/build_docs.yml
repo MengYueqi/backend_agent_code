@@ -1,0 +1,40 @@
+name: Auto Build Problem Site
+
+on:
+  push:
+    branches:
+      - main  # 只有当 main 分支有代码提交时才会触发
+  workflow_dispatch: # 允许你手动在 GitHub 页面点击按钮运行
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 拉取你的代码
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 2. 设置 Python 环境
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10' # 也可以换成你需要的版本
+
+      # 3. 安装脚本可能需要的依赖 (如果有 requirements.txt)
+      - name: Install dependencies
+        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      # 4. 执行你的构建脚本
+      - name: Run Build Script
+        run: |
+          chmod +x ./scripts/build_problem_site.py
+          python ./scripts/build_problem_site.py
+
+      # 5. 提交生成的文档回仓库 (或者部署到 GitHub Pages)
+      - name: Commit and Push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs: auto-generate problem site [skip ci]"
+          file_pattern: 'docs/*' # 这里填你脚本生成的文件所在目录
