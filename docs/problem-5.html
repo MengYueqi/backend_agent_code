@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>题目主页</title>
+  <title>题目 5 - 查询是否存在只修改一个字母即可匹配的单词</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
@@ -320,46 +320,217 @@ pre code {
 <body>
 <button id="theme-toggle" class="theme-toggle" type="button" aria-label="切换深色主题">深色</button>
 
-<main class="home-wrap">
-  <section class="hero">
-    <span class="eyebrow">ALGORITHM NOTEBOOK</span>
-    <h1 class="home-title">算法题与实例代码</h1>
-    <p class="home-sub">点击卡片进入详情页，左侧为题目说明，右侧为代码实现与测试。页面支持语法高亮，适合直接复盘每道题的思路和落地代码。</p>
+<div class="layout">
+  <section class="panel left">
+    <div class="topbar">
+      <a class="back" href="./index.html">返回主页</a>
+      <span class="badge">题号 5</span>
+    </div>
+    <h1>查询是否存在只修改一个字母即可匹配的单词</h1>
+    <h1>题目 5：查询是否存在只修改一个字母即可匹配的单词</h1>
+<h2>题目描述</h2>
+<p>给定一个字符串数组 `words`，数组中每个元素都是一个仅包含小写英文字母的单词。  </p>
+<p>再给定一个查询单词 `x`，请判断 `words` 中是否存在某个单词，可以通过把 `x` 中的**恰好一个字符替换为另一个字符**得到。</p>
+<p>如果存在这样的单词，返回 `true`；否则返回 `false`。</p>
+<h2>具体要求</h2>
+<p>1. 只允许执行一次“替换一个字符”的操作，不能插入字符，也不能删除字符。</p>
+<p>2. 只有长度与 `x` 相同的单词才可能匹配。</p>
+<p>3. 如果 `words` 中存在任意一个满足条件的单词，返回 `true`。</p>
+<p>4. 如果没有任何单词满足条件，返回 `false`。</p>
+<p>5. 当 `words` 为空时，直接返回 `false`。</p>
+<p>6. 如果 `x` 与某个单词完全相同，不算匹配，因为题目要求必须恰好修改一个字符。</p>
+<h2>输入输出说明</h2>
+<ul>
+<li>输入：</li>
+</ul>
+<p>  - `words []string`：候选单词列表，每个单词只包含小写英文字母。</p>
+<p>  - `x string`：待查询单词，只包含小写英文字母。</p>
+<ul>
+<li>输出：`bool`，表示是否存在一个单词能由 `x` 修改恰好一个字符得到。</li>
+</ul>
+<p>建议函数签名：</p>
+<pre><code class="language-go">
+func HasOneLetterDifference(words []string, x string) bool
+</code></pre>
+<h2>示例</h2>
+<h3>示例 1（正常场景）</h3>
+<ul>
+<li>输入：`words = [&quot;hello&quot;, &quot;world&quot;], x = &quot;hhllo&quot;`</li>
+<li>输出：`true`</li>
+<li>说明：`&quot;hhllo&quot;` 只需要把第 2 个字符改为 `&#x27;e&#x27;`，即可得到 `&quot;hello&quot;`。</li>
+</ul>
+<h3>示例 2（正常场景）</h3>
+<ul>
+<li>输入：`words = [&quot;hello&quot;, &quot;world&quot;], x = &quot;hello&quot;`</li>
+<li>输出：`false`</li>
+<li>说明：虽然 `&quot;hello&quot;` 在 `words` 中存在，但没有发生字符修改，不满足“恰好修改一个字符”。</li>
+</ul>
+<h3>示例 3（正常场景）</h3>
+<ul>
+<li>输入：`words = [&quot;judge&quot;, &quot;badge&quot;, &quot;ledge&quot;], x = &quot;budge&quot;`</li>
+<li>输出：`true`</li>
+<li>说明：`&quot;budge&quot;` 把第 1 个字符从 `&#x27;b&#x27;` 改为 `&#x27;j&#x27;` 后，可以匹配 `&quot;judge&quot;`。</li>
+</ul>
+<h3>示例 4（边界场景）</h3>
+<ul>
+<li>输入：`words = [], x = &quot;abc&quot;`</li>
+<li>输出：`false`</li>
+<li>说明：候选列表为空时，不存在任何可匹配项。</li>
+</ul>
+<h2>追问（可选）</h2>
+<ul>
+<li>如果 `words` 很大，并且会有很多次查询，如何设计预处理结构来降低单次查询时间？</li>
+<li>如果字符集不再局限于小写英文字母，而是任意 Unicode 字符，比较逻辑需要注意什么？</li>
+</ul>
   </section>
-  <section class="grid">
+  <section class="panel right">
+    <h2>代码实现</h2>
+    <p class="code-intro">对应题解代码与测试文件按目录展示，便于对照阅读与回顾。</p>
     
-<a class="card" href="./problem-1.html">
-  <div class="card-id">题号 1</div>
-  <div class="card-title">交替打印abc</div>
-  <div class="card-meta">2 个代码文件</div>
-</a>
+<section class="code-block">
+  <div class="code-head">
+    <h3>5_one_letter_match.go</h3>
+    <span class="path">src/5_one_letter_match.go</span>
+  </div>
+  <pre><code class="language-go">package src
 
-<a class="card" href="./problem-2.html">
-  <div class="card-id">题号 2</div>
-  <div class="card-title">单例模式</div>
-  <div class="card-meta">2 个代码文件</div>
-</a>
+// 题目：查询是否存在只修改一个字母即可匹配的单词
+type Trie struct {
+	next   []*Trie
+	isLast bool
+}
 
-<a class="card" href="./problem-3.html">
-  <div class="card-id">题号 3</div>
-  <div class="card-title">至多包含两种不同数字的最长连续子序列</div>
-  <div class="card-meta">2 个代码文件</div>
-</a>
+func initTrie() Trie {
+	return Trie{
+		isLast: false,
+		next:   make([]*Trie, 26),
+	}
+}
 
-<a class="card" href="./problem-4.html">
-  <div class="card-id">题号 4</div>
-  <div class="card-title">使用给定数字拼出小于n的最大数</div>
-  <div class="card-meta">2 个代码文件</div>
-</a>
+func (this *Trie) addWord(word string) {
+	curNode := this
+	for i := 0; i &lt; len(word); i++ {
+		if curNode.next[word[i]-&#x27;a&#x27;] == nil {
+			curNode.next[word[i]-&#x27;a&#x27;] = &amp;Trie{
+				isLast: false,
+				next:   make([]*Trie, 26),
+			}
+			curNode = curNode.next[word[i]-&#x27;a&#x27;]
+		} else {
+			curNode = curNode.next[word[i]-&#x27;a&#x27;]
+		}
+	}
+	curNode.isLast = true
+}
 
-<a class="card" href="./problem-5.html">
-  <div class="card-id">题号 5</div>
-  <div class="card-title">查询是否存在只修改一个字母即可匹配的单词</div>
-  <div class="card-meta">2 个代码文件</div>
-</a>
+func (this *Trie) findWord(word string) bool {
+	curNode := this
+	for i := 0; i &lt; len(word); i++ {
+		if curNode.next[word[i]-&#x27;a&#x27;] == nil {
+			return false
+		}
+		curNode = curNode.next[word[i]-&#x27;a&#x27;]
+	}
+	return curNode.isLast
+}
+
+func HasOneLetterDifference(words []string, x string) bool {
+	// TODO: implement
+	trie := initTrie()
+	for i := 0; i &lt; len(words); i++ {
+		for j := 0; j &lt; len(words[i]); j++ {
+			prevWord := []byte(words[i])
+			for k := 0; k &lt; 26; k++ {
+				prevWord[j] = byte(&#x27;a&#x27; + k)
+				if string(prevWord) != words[i] {
+					trie.addWord(string(prevWord))
+				}
+			}
+		}
+	}
+	return trie.findWord(x)
+}
+</code></pre>
+</section>
+
+<section class="code-block">
+  <div class="code-head">
+    <h3>5_one_letter_match_test.go</h3>
+    <span class="path">test/5_one_letter_match_test.go</span>
+  </div>
+  <pre><code class="language-go">package test
+
+import (
+	&quot;testing&quot;
+
+	&quot;go_coding_noalgorithm/src&quot;
+)
+
+func TestHasOneLetterDifference(t *testing.T) {
+	tests := []struct {
+		name  string
+		words []string
+		x     string
+		want  bool
+	}{
+		{
+			name:  &quot;match by replacing one character&quot;,
+			words: []string{&quot;hello&quot;, &quot;world&quot;},
+			x:     &quot;hhllo&quot;,
+			want:  true,
+		},
+		{
+			name:  &quot;exact same word does not count&quot;,
+			words: []string{&quot;hello&quot;, &quot;world&quot;},
+			x:     &quot;hello&quot;,
+			want:  false,
+		},
+		{
+			name:  &quot;different length cannot match&quot;,
+			words: []string{&quot;abcd&quot;, &quot;xy&quot;},
+			x:     &quot;abc&quot;,
+			want:  false,
+		},
+		{
+			name:  &quot;multiple candidates any one match is enough&quot;,
+			words: []string{&quot;judge&quot;, &quot;badge&quot;, &quot;ledge&quot;},
+			x:     &quot;budge&quot;,
+			want:  true,
+		},
+		{
+			name:  &quot;needs more than one replacement&quot;,
+			words: []string{&quot;abc&quot;, &quot;def&quot;},
+			x:     &quot;axf&quot;,
+			want:  false,
+		},
+		{
+			name:  &quot;empty dictionary&quot;,
+			words: []string{},
+			x:     &quot;abc&quot;,
+			want:  false,
+		},
+		{
+			name:  &quot;single character word can match&quot;,
+			words: []string{&quot;a&quot;, &quot;b&quot;},
+			x:     &quot;c&quot;,
+			want:  true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := src.HasOneLetterDifference(tt.words, tt.x)
+			if got != tt.want {
+				t.Fatalf(&quot;HasOneLetterDifference(%v, %q) = %v, want %v&quot;, tt.words, tt.x, got, tt.want)
+			}
+		})
+	}
+}
+</code></pre>
+</section>
 
   </section>
-</main>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script>
