@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>题目主页</title>
+  <title>题目 6 - 实现快排和堆排</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
@@ -320,52 +320,294 @@ pre code {
 <body>
 <button id="theme-toggle" class="theme-toggle" type="button" aria-label="切换深色主题">深色</button>
 
-<main class="home-wrap">
-  <section class="hero">
-    <span class="eyebrow">ALGORITHM NOTEBOOK</span>
-    <h1 class="home-title">算法题与实例代码</h1>
-    <p class="home-sub">点击卡片进入详情页，左侧为题目说明，右侧为代码实现与测试。页面支持语法高亮，适合直接复盘每道题的思路和落地代码。</p>
+<div class="layout">
+  <section class="panel left">
+    <div class="topbar">
+      <a class="back" href="./index.html">返回主页</a>
+      <span class="badge">题号 6</span>
+    </div>
+    <h1>实现快排和堆排</h1>
+    <h1>题目 6：实现快排和堆排</h1>
+<h2>题目描述</h2>
+<p>给定一个整数切片 `nums`，请分别实现快速排序和堆排序，将其按升序排列。  </p>
+<p>你需要提供两个函数：一个使用快排思想完成排序，另一个使用堆排思想完成排序。</p>
+<p>题目重点不是调用标准库排序，而是手写出这两种经典排序的核心过程，并正确处理常见边界情况。</p>
+<h2>具体要求</h2>
+<p>1. 需要实现两个函数：`QuickSort(nums []int)` 和 `HeapSort(nums []int)`。</p>
+<p>2. 两个函数都应直接修改输入切片，使其最终按升序排列，不要求返回新切片。</p>
+<p>3. 当输入为 `nil`、空切片或仅包含一个元素时，函数应直接返回，不应发生 panic。</p>
+<p>4. 输入数据可能包含重复元素、负数、零，以及已经有序或完全逆序的情况。</p>
+<p>5. 不允许直接调用 `sort.Ints` 或其它现成排序函数完成核心逻辑。</p>
+<p>6. 排序结果只要求数值升序，不要求稳定性。</p>
+<h2>输入输出说明</h2>
+<ul>
+<li>输入：`nums []int`，待排序的整数切片。</li>
+<li>输出：无返回值，函数执行结束后，`nums` 应被原地修改为升序结果。</li>
+</ul>
+<p>建议函数签名：</p>
+<pre><code class="language-go">
+func QuickSort(nums []int)
+func HeapSort(nums []int)
+</code></pre>
+<h2>示例</h2>
+<h3>示例 1（正常场景）</h3>
+<ul>
+<li>输入：`nums = [5, 1, 4, 2, 8]`</li>
+<li>输出：`[1, 2, 4, 5, 8]`</li>
+<li>说明：两个函数都应把切片原地排成升序。</li>
+</ul>
+<h3>示例 2（包含重复元素）</h3>
+<ul>
+<li>输入：`nums = [3, 1, 2, 3, 2]`</li>
+<li>输出：`[1, 2, 2, 3, 3]`</li>
+<li>说明：重复元素需要被正确保留并排序。</li>
+</ul>
+<h3>示例 3（边界：空切片）</h3>
+<ul>
+<li>输入：`nums = []`</li>
+<li>输出：`[]`</li>
+<li>说明：空切片直接返回即可。</li>
+</ul>
+<h3>示例 4（边界：单元素）</h3>
+<ul>
+<li>输入：`nums = [7]`</li>
+<li>输出：`[7]`</li>
+<li>说明：单元素切片天然有序。</li>
+</ul>
+<h2>追问（可选）</h2>
+<ul>
+<li>如果要降低快排在近乎有序数据上的最坏情况风险，你会如何选择 pivot？</li>
+<li>如果要把堆排改成降序，最小改动应放在哪一层逻辑？</li>
+</ul>
   </section>
-  <section class="grid">
+  <section class="panel right">
+    <h2>代码实现</h2>
+    <p class="code-intro">对应题解代码与测试文件按目录展示，便于对照阅读与回顾。</p>
     
-<a class="card" href="./problem-1.html">
-  <div class="card-id">题号 1</div>
-  <div class="card-title">交替打印abc</div>
-  <div class="card-meta">2 个代码文件</div>
-</a>
+<section class="code-block">
+  <div class="code-head">
+    <h3>6_quick_heap_sort.go</h3>
+    <span class="path">src/6_quick_heap_sort.go</span>
+  </div>
+  <pre><code class="language-go">package src
 
-<a class="card" href="./problem-2.html">
-  <div class="card-id">题号 2</div>
-  <div class="card-title">单例模式</div>
-  <div class="card-meta">2 个代码文件</div>
-</a>
+// 题目：实现快排和堆排
 
-<a class="card" href="./problem-3.html">
-  <div class="card-id">题号 3</div>
-  <div class="card-title">至多包含两种不同数字的最长连续子序列</div>
-  <div class="card-meta">2 个代码文件</div>
-</a>
+func partition(nums []int, left, right int) {
+	if left &gt;= right {
+		return
+	}
+	pivot := nums[left]
+	first, last := left+1, right
+	for {
+		for first &lt;= last &amp;&amp; nums[first] &lt;= pivot {
+			first++
+		}
+		for first &lt;= last &amp;&amp; nums[last] &gt;= pivot {
+			last--
+		}
+		if first &gt;= last {
+			break
+		}
+		nums[first], nums[last] = nums[last], nums[first]
+	}
+	nums[left], nums[last] = nums[last], nums[left]
+	partition(nums, left, last-1)
+	partition(nums, last+1, right)
+}
 
-<a class="card" href="./problem-4.html">
-  <div class="card-id">题号 4</div>
-  <div class="card-title">使用给定数字拼出小于n的最大数</div>
-  <div class="card-meta">2 个代码文件</div>
-</a>
+func QuickSort(nums []int) {
+	// TODO: implement quick sort
+	partition(nums, 0, len(nums)-1)
+}
 
-<a class="card" href="./problem-5.html">
-  <div class="card-id">题号 5</div>
-  <div class="card-title">查询是否存在只修改一个字母即可匹配的单词</div>
-  <div class="card-meta">2 个代码文件</div>
-</a>
+func siftDown(nums []int, node, last int) {
+	for {
+		child := node*2 + 1
+		if child &gt; last {
+			break
+		}
+		next := node
+		if nums[node] &lt; nums[child] {
+			next = child
+		}
+		if child+1 &lt;= last &amp;&amp; nums[next] &lt; nums[child+1] {
+			next = child + 1
+		}
+		if next == node {
+			return
+		} else {
+			nums[node], nums[next] = nums[next], nums[node]
+			node = next
+		}
+	}
+}
 
-<a class="card" href="./problem-6.html">
-  <div class="card-id">题号 6</div>
-  <div class="card-title">实现快排和堆排</div>
-  <div class="card-meta">2 个代码文件</div>
-</a>
+func HeapSort(nums []int) {
+	// TODO: implement heap sort
+	for i := len(nums) / 2; i &gt;= 0; i-- {
+		siftDown(nums, i, len(nums)-1)
+	}
+
+	for i := len(nums) - 1; i &gt;= 0; i-- {
+		nums[0], nums[i] = nums[i], nums[0]
+		siftDown(nums, 0, i-1)
+	}
+
+}
+</code></pre>
+</section>
+
+<section class="code-block">
+  <div class="code-head">
+    <h3>6_quick_heap_sort_test.go</h3>
+    <span class="path">test/6_quick_heap_sort_test.go</span>
+  </div>
+  <pre><code class="language-go">package test
+
+import (
+	&quot;reflect&quot;
+	&quot;testing&quot;
+
+	&quot;go_coding_noalgorithm/src&quot;
+)
+
+func cloneInts(nums []int) []int {
+	if nums == nil {
+		return nil
+	}
+
+	got := make([]int, len(nums))
+	copy(got, nums)
+	return got
+}
+
+func TestQuickSort(t *testing.T) {
+	tests := []struct {
+		name string
+		nums []int
+		want []int
+	}{
+		{
+			name: &quot;basic case&quot;,
+			nums: []int{5, 1, 4, 2, 8},
+			want: []int{1, 2, 4, 5, 8},
+		},
+		{
+			name: &quot;contains duplicates&quot;,
+			nums: []int{3, 1, 2, 3, 2},
+			want: []int{1, 2, 2, 3, 3},
+		},
+		{
+			name: &quot;contains negative numbers&quot;,
+			nums: []int{-3, 0, 2, -1, 5},
+			want: []int{-3, -1, 0, 2, 5},
+		},
+		{
+			name: &quot;already sorted&quot;,
+			nums: []int{1, 2, 3, 4, 5},
+			want: []int{1, 2, 3, 4, 5},
+		},
+		{
+			name: &quot;reverse sorted&quot;,
+			nums: []int{9, 7, 5, 3, 1},
+			want: []int{1, 3, 5, 7, 9},
+		},
+		{
+			name: &quot;single element&quot;,
+			nums: []int{7},
+			want: []int{7},
+		},
+		{
+			name: &quot;empty slice&quot;,
+			nums: []int{},
+			want: []int{},
+		},
+		{
+			name: &quot;nil slice&quot;,
+			nums: nil,
+			want: nil,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := cloneInts(tt.nums)
+
+			src.QuickSort(got)
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Fatalf(&quot;QuickSort(%v) = %v, want %v&quot;, tt.nums, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestHeapSort(t *testing.T) {
+	tests := []struct {
+		name string
+		nums []int
+		want []int
+	}{
+		{
+			name: &quot;basic case&quot;,
+			nums: []int{5, 1, 4, 2, 8},
+			want: []int{1, 2, 4, 5, 8},
+		},
+		{
+			name: &quot;contains duplicates&quot;,
+			nums: []int{3, 1, 2, 3, 2},
+			want: []int{1, 2, 2, 3, 3},
+		},
+		{
+			name: &quot;contains negative numbers&quot;,
+			nums: []int{-3, 0, 2, -1, 5},
+			want: []int{-3, -1, 0, 2, 5},
+		},
+		{
+			name: &quot;already sorted&quot;,
+			nums: []int{1, 2, 3, 4, 5},
+			want: []int{1, 2, 3, 4, 5},
+		},
+		{
+			name: &quot;reverse sorted&quot;,
+			nums: []int{9, 7, 5, 3, 1},
+			want: []int{1, 3, 5, 7, 9},
+		},
+		{
+			name: &quot;single element&quot;,
+			nums: []int{7},
+			want: []int{7},
+		},
+		{
+			name: &quot;empty slice&quot;,
+			nums: []int{},
+			want: []int{},
+		},
+		{
+			name: &quot;nil slice&quot;,
+			nums: nil,
+			want: nil,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := cloneInts(tt.nums)
+
+			src.HeapSort(got)
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Fatalf(&quot;HeapSort(%v) = %v, want %v&quot;, tt.nums, got, tt.want)
+			}
+		})
+	}
+}
+</code></pre>
+</section>
 
   </section>
-</main>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script>
